@@ -1,3 +1,5 @@
+github.com/WillBeebe/lambdalabs-client v0.1.0 h1:SjHgwvOG2Pz/K1psJYcE0w639GVJm9zD5A0Tl9g7u8s=
+github.com/WillBeebe/lambdalabs-client v0.1.0/go.mod h1:6t4o+QKpPwwf+SzdOETdbQjCy/mYq6k4UijwzFZFgRs=
 github.com/agext/levenshtein v1.2.2 h1:0S/Yg6LYmFJ5stwQeRp6EeOcCbj7xiqQSdNelsXvaqE=
 github.com/agext/levenshtein v1.2.2/go.mod h1:JEDfjyjHDjOF/1e4FlBE/PkbqA9OfWu2ki2W0IB5558=
 github.com/apparentlymart/go-textseg/v12 v12.0.0/go.mod h1:S/4uRK2UtaQttw1GenVJEynmyUenKwP++x/+DdGV/Ec=

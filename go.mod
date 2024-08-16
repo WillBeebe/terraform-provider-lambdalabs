@@ -3,11 +3,13 @@ module github.com/WillBeebe/terraform-provider-lambdalabs
 go 1.22.5
 
 require (
-	github.com/WillBeebe/lambdalabs-client v0.0.0
+	github.com/WillBeebe/lambdalabs-client v0.1.0
+	github.com/hashicorp/terraform-plugin-log v0.9.0
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.34.0
 )
 
-replace github.com/WillBeebe/lambdalabs-client => ../lambda_client
+// for local debugging
+// replace github.com/WillBeebe/lambdalabs-client => ../lambda_client
 
 require (
 	github.com/agext/levenshtein v1.2.2 // indirect
@@ -23,7 +25,6 @@ require (
 	github.com/hashicorp/hcl/v2 v2.20.1 // indirect
 	github.com/hashicorp/logutils v1.0.0 // indirect
 	github.com/hashicorp/terraform-plugin-go v0.23.0 // indirect
-	github.com/hashicorp/terraform-plugin-log v0.9.0 // indirect
 	github.com/hashicorp/terraform-registry-address v0.2.3 // indirect
 	github.com/hashicorp/terraform-svchost v0.1.1 // indirect
 	github.com/hashicorp/yamux v0.1.1 // indirect
