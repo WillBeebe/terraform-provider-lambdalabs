@@ -10,9 +10,27 @@ on:
 
 jobs:
   terraform-provider-release:
+    runs-on: ubuntu-latest
     name: 'Terraform Provider Release'
-    uses: hashicorp/ghaction-terraform-provider-release/.github/workflows/community.yml@v4
-    secrets:
-      gpg-private-key: '${{ secrets.GPG_PRIVATE_KEY }}'
-    with:
-      setup-go-version-file: 'go.mod'
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          # Allow goreleaser to access older tag information.
+          fetch-depth: 0
+      - uses: actions/setup-go@v3
+        with:
+          go-version-file: 'go.mod'
+          cache: true
+      - name: Import GPG key
+        id: import_gpg
+        uses: crazy-max/ghaction-import-gpg@01dd5d3ca463c7f10f7f4f7b4f177225ac661ee4 # v6.1.0
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          # passphrase: ${{ secrets.gpg-private-key-passphrase }}
+      - name: goreleaser release
+        uses: goreleaser/goreleaser-action@286f3b13b1b49da4ac219696163fb8c1c93e1200 # v6.0.0
+        with:
+          args: release --clean ${{ inputs.goreleaser-release-args }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
