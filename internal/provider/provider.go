@@ -1,6 +1,9 @@
 package provider
 
 import (
+	"fmt"
+
+	lambda "github.com/WillBeebe/lambdalabs-client"
 	"github.com/WillBeebe/terraform-provider-lambdalabs/internal/resources"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -29,8 +32,10 @@ func Provider() *schema.Provider {
 }
 
 func providerConfigure(d *schema.ResourceData) (interface{}, error) {
-	// apiKey := d.Get("api_key").(string)
+	apiKey := d.Get("api_key").(string)
+	cfg := lambda.NewConfiguration()
+	cfg.AddDefaultHeader("Authorization", fmt.Sprintf("Bearer %s", apiKey))
+	client := lambda.NewAPIClient(cfg)
 
-	// Initialize and return the API client here
-	return nil, nil
+	return client, nil
 }

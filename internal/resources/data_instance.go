@@ -1,12 +1,17 @@
 package resources
 
 import (
+	"context"
+	"time"
+
+	lambda "github.com/WillBeebe/lambdalabs-client"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func DataSourceInstanceTypesSchema() *schema.Resource {
 	return &schema.Resource{
-		Read: dataSourceInstanceTypesRead,
+		ReadContext: dataSourceInstanceTypesRead,
 		Schema: map[string]*schema.Schema{
 			"instance_types": {
 				Type:     schema.TypeList,
@@ -59,7 +64,32 @@ func DataSourceInstanceTypesSchema() *schema.Resource {
 	}
 }
 
-func dataSourceInstanceTypesRead(d *schema.ResourceData, meta interface{}) error {
-	// Implement the API call to get instance types
+func dataSourceInstanceTypesRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	client := meta.(*lambda.APIClient)
+
+	resp, _, err := client.DefaultAPI.InstanceTypes(ctx).Execute()
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	instanceTypes := make([]map[string]interface{}, 0)
+
+	for _, it := range resp.Data {
+		instanceType := map[string]interface{}{
+			"name":                            it.InstanceType.Name,
+			"description":                     it.InstanceType.Description,
+			"gpu_description":                 it.InstanceType.GpuDescription,
+			"price_cents_per_hour":            it.InstanceType.PriceCentsPerHour,
+			"specs":                           it.InstanceType.Specs,
+			"regions_with_capacity_available": it.RegionsWithCapacityAvailable,
+		}
+		instanceTypes = append(instanceTypes, instanceType)
+	}
+
+	if err := d.Set("instance_types", instanceTypes); err != nil {
+		return diag.FromErr(err)
+	}
+
+	d.SetId(time.Now().UTC().String())
 	return nil
 }

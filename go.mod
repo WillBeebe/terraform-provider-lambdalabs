@@ -2,7 +2,12 @@ module github.com/WillBeebe/terraform-provider-lambdalabs
 
 go 1.22.5
 
-require github.com/hashicorp/terraform-plugin-sdk/v2 v2.34.0
+require (
+	github.com/WillBeebe/lambdalabs-client v0.0.0
+	github.com/hashicorp/terraform-plugin-sdk/v2 v2.34.0
+)
+
+replace github.com/WillBeebe/lambdalabs-client => ../lambda_client
 
 require (
 	github.com/agext/levenshtein v1.2.2 // indirect
