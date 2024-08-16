@@ -1,0 +1,6 @@
+release:
+  disable: false
+  github:
+      owner: WillBeebe
+      name: terraform-provider-lambdalabs
+
