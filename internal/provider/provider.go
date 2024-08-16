@@ -25,7 +25,8 @@ func Provider() *schema.Provider {
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"lambdalabs_instance_types": resources.DataSourceInstanceTypesSchema(),
-			// "lambdalabs_instance":       dataSourceInstance(),
+			"lambdalabs_instance":       resources.DataSourceInstanceSchema(),
+			"lambdalabs_file_systems":   resources.DataSourceFileSystensSchema(),
 		},
 		ConfigureFunc: providerConfigure,
 	}

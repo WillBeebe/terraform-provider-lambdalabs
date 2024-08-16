@@ -2,8 +2,10 @@ package resources
 
 import (
 	"context"
+	"fmt"
 
 	lambda "github.com/WillBeebe/lambdalabs-client"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -24,11 +26,12 @@ func ResourceSSHKeySchema() *schema.Resource {
 				Optional: true,
 				ForceNew: true,
 			},
-			"private_key": {
-				Type:      schema.TypeString,
-				Computed:  true,
-				Sensitive: true,
-			},
+			// "private_key": {
+			// 	Type: schema.TypeString,
+			// 	// Computed is the "right" choice, but the private key doesn't came back on read
+			// 	Optional:  true,
+			// 	Sensitive: true,
+			// },
 		},
 	}
 }
@@ -56,12 +59,9 @@ func resourceSSHKeyCreate(ctx context.Context, d *schema.ResourceData, meta inte
 	}
 
 	d.SetId(resp.Data.Id)
+	d.Set("public_key", resp.Data.PublicKey)
 
-	if resp.Data.PrivateKey.IsSet() {
-		d.Set("private_key", resp.Data.PrivateKey)
-	}
-
-	return resourceSSHKeyRead(ctx, d, meta)
+	return nil
 }
 
 func resourceSSHKeyRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -75,6 +75,7 @@ func resourceSSHKeyRead(ctx context.Context, d *schema.ResourceData, meta interf
 	for _, key := range resp.Data {
 		if key.Id == d.Id() {
 			d.Set("name", key.Name)
+			tflog.Info(ctx, fmt.Sprintf("public key set %s", key.PublicKey))
 			d.Set("public_key", key.PublicKey)
 			return nil
 		}

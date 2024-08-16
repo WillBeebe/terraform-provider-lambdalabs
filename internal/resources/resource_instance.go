@@ -5,6 +5,7 @@ import (
 	"time"
 
 	lambda "github.com/WillBeebe/lambdalabs-client"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -94,13 +95,13 @@ func resourceInstanceCreate(ctx context.Context, d *schema.ResourceData, meta in
 		RegionName:       d.Get("region_name").(string),
 		InstanceTypeName: d.Get("instance_type_name").(string),
 		SshKeyNames:      sshKeyNames,
-		FileSystemNames:  fileSystemNames,
-		Quantity:         lambda.PtrInt32(1),
+		// FileSystemNames:  fileSystemNames,
+		// Quantity:         lambda.PtrInt32(1),
 	}
 
-	if v, ok := d.GetOk("name"); ok {
-		req.Name = *lambda.NewNullableString(lambda.PtrString(v.(string)))
-	}
+	// if v, ok := d.GetOk("name"); ok {
+	// 	req.Name = *lambda.NewNullableString(lambda.PtrString(v.(string)))
+	// }
 
 	resp, _, err := client.DefaultAPI.LaunchInstance(ctx).LaunchInstanceRequest(req).Execute()
 	if err != nil {
@@ -176,6 +177,7 @@ func resourceInstanceDelete(ctx context.Context, d *schema.ResourceData, meta in
 }
 
 func waitForInstanceStatus(ctx context.Context, client *lambda.APIClient, id string, targetStatus string, timeout time.Duration) error {
+	tflog.Info(ctx, "waiting for instance")
 	stateConf := &retry.StateChangeConf{
 		Pending: []string{"booting", "unhealthy", "terminating"},
 		Target:  []string{targetStatus},
